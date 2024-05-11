@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="static\css\style.css">
+    <script>
+        window.onload = function() {
+        var income=document.getElementById("income").value
+        var expense=document.getElementById("expense").value
+        var savings=document.getElementById("savings").value
+        expense=(parseInt(expense)/parseInt(income))*100
+        savings=(parseInt(savings)/parseInt(income))*100
+        console.log(expense)
+        console.log(savings)
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            title: {
+                text: "Transactions"
+            },
+            data: [{
+                type: "pie",
+                startAngle: 240,
+                yValueFormatString: "##0.00\"%\"",
+                indexLabel: "{label} {y}",
+                dataPoints: [
+
+                    {y: expense, label: "Expense"},
+                    {y: savings, label: "Saving"}
+                ]
+            }]
+        });
+        chart.render();
+        
+        }
+        </script>
+</head>
+<body>
+    <h1>Expense Tracker</h1>
+    <h2>Income={{income}}</h2>
+    <h2>Expense={{expense}}</h2>
+    <h2>Saving={{income-expense}}</h2>
+    <input type="hidden" name="Income" value="{{income}}" id="income">
+    <input type="hidden" name="Expense" value="{{expense}}" id="expense">
+    <input type="hidden" name="Savings" value="{{income-expense}}" id="savings">
+    <form action="/addtransaction" method="POST">
+        <div class="form-ele"><input type="text" id="name" name="name" placeholder="Name"></div>
+        <div class="form-ele"><select id="type" name="typeval" size="1">
+            <option value="">Select</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </select></div>
+          <div class="form-ele"><input type="number" id="amount" name="amount" placeholder="Amount"></div>
+          <div class="form-ele"><input type="submit"></div>
+
+    </form>
+
+    <div>
+        <h1>History</h1>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Transaction</th>
+                <th>Amount</th>
+            </tr>
+            {%for i in data%}
+
+           <tr>
+            <td>{{loop.index}}</td>
+            <td>{{i[1]}}</td>
+            <td>{{i[2]}}</td>
+            <td>{{i[3]}}</td>
+            <td><a href="/delte?id={{i[0]}}"><button>Delete</button></a></td>
+           </tr>
+           {%endfor%}
+            
+        </table>
+    </div>
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+</body>
+</html>
